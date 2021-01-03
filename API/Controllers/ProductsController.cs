@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Core.Interfaces;
 using Core.SPECIFICATION;
 using API.Dtos;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -20,29 +21,23 @@ namespace API.Controllers
 
         private readonly IGenericRepository<Product> _productsRepo;
         private readonly IGenericRepository<ProductType> _productTypeRepo;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IGenericRepository<Product> productsRepo, IGenericRepository<ProductType> productTypeRepo)
+        public ProductsController(IGenericRepository<Product> productsRepo, IGenericRepository<ProductType> productTypeRepo, IMapper mapper)
         {
+            _mapper = mapper;
             _productTypeRepo = productTypeRepo;
             _productsRepo = productsRepo;
 
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductToReturnDTO>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts()
         {
             var spec = new ProductsWithTypesSpecification();
 
             var products = await _productsRepo.ListAsync(spec);
-            return products.Select(product => new ProductToReturnDTO
-            {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            url = product.url,
-            Price = product.Price,
-            ProductType = product.ProductType.Name
-            }).ToList();
+            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDTO>>(products) );
         }
 
 
@@ -50,18 +45,8 @@ namespace API.Controllers
         public async Task<ActionResult<ProductToReturnDTO>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesSpecification(id);
-        var product = await _productsRepo.GetEntitiesWithSpec(spec);
-        return new ProductToReturnDTO
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            url = product.url,
-            Price = product.Price,
-            ProductType = product.ProductType.Name
-
-
-        };
+            var product = await _productsRepo.GetEntitiesWithSpec(spec);
+            return _mapper.Map<Product, ProductToReturnDTO>(product);
         }
 
         [HttpGet("types")]

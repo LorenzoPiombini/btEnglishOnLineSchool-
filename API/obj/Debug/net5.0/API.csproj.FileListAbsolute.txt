@@ -65,3 +65,5 @@
 /Users/lorenzopiombini/Desktop/BtEnglishSchool/API/bin/Debug/net5.0/Infrastructure.dll
 /Users/lorenzopiombini/Desktop/BtEnglishSchool/API/bin/Debug/net5.0/Infrastructure.pdb
 /Users/lorenzopiombini/Desktop/BtEnglishSchool/API/bin/Debug/net5.0/Core.pdb
+/Users/lorenzopiombini/Desktop/BtEnglishSchool/API/bin/Debug/net5.0/AutoMapper.dll
+/Users/lorenzopiombini/Desktop/BtEnglishSchool/API/bin/Debug/net5.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
