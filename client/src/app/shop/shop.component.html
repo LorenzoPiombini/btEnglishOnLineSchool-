@@ -1,0 +1,42 @@
+<div class="container">
+<div class="row">
+
+<section class="col-3">
+    <h5 class="color ml-3">Ordina</h5>
+    <select name="" id="" class="custom-select mb-3">
+        <option value="" selected>Alfabetico</option>
+        <option value="">dal prezzo piu' basso </option>
+        <option value="">dal prezzo piu' alto</option>
+
+
+
+    </select>
+
+    <h5 class="color ml-3">Tipologia</h5>
+   <ul class="list-group my-3">
+    <li class="list-group-item" aria-current="true" *ngFor="let type of types">
+        {{type.name}}
+    </li>
+  
+  </ul>
+</section>
+
+<section class="col-9">
+    <div class="d-flex justify-content-between align-items-center">
+        <header>
+            <span>Prodotti <strong>1</strong> di <strong>1</strong></span>
+        </header>
+        <div class="form-inline mt-2">
+            <input type="text" class="form-control" style="width: 300px;" placeholder="Cerca">
+            <button class="btn btn-outline-primary my-2">Cerca </button>
+            <button class="btn btn-outline-success ml-2 my-2">Reset</button>
+        </div>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col-4 mb-4" *ngFor="let item of products">
+            <app-product-item [product]="item"></app-product-item>
+
+
+        </div>   
+    </div>  
