@@ -12,7 +12,7 @@ import { ShopService } from './shop.service';
 export class ShopComponent implements OnInit {
   products!: IProduct[];
   types!: IType[];
-  typeIdSelected!: number;
+  typeIdSelected = 0;
 
 
 
