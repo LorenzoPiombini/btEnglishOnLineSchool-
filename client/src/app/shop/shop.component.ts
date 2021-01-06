@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { timeStamp } from 'console';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+
 import { IProduct } from '../shared/modules/product';
 import { IType } from '../shared/modules/ProductType';
+import { ShopParams } from '../shared/modules/shopParams';
 import { ShopService } from './shop.service';
 
 @Component({
@@ -10,9 +11,16 @@ import { ShopService } from './shop.service';
   styleUrls: ['./shop.component.scss']
 })
 export class ShopComponent implements OnInit {
+  @ViewChild('search', {static: true}) searchTerm!: ElementRef;
   products!: IProduct[];
   types!: IType[];
-  typeIdSelected = 0;
+  shopParams = new ShopParams();
+  totalCount: number | undefined;
+  sortOptions = [
+    {name: 'Alfabetico', value: 'name'},
+    {name: 'dal prezzo piu´ basso al piu´ alto ', value: 'priceAsc'},
+    {name: 'dal prezzo piu´ alto al piu´ basso', value: 'priceDesc'}
+  ];
 
 
 
@@ -26,8 +34,11 @@ export class ShopComponent implements OnInit {
 
   // tslint:disable-next-line: typedef
   getProducts(){
-    this.shopService.getProducts(this.typeIdSelected).subscribe(response => {
+    this.shopService.getProducts(this.shopParams).subscribe(response => {
       this.products = response.data;
+      this.shopParams.pageNumber = response.pageIndex;
+      this.shopParams.pageSize = response.pageSize;
+      this.totalCount = response?.count;
     }, error => {
       console.log(error);
     });
@@ -46,7 +57,37 @@ export class ShopComponent implements OnInit {
 
   // tslint:disable-next-line: typedef
   onTypeSelected(typeId: number){
-    this.typeIdSelected = typeId;
+    this.shopParams.typeId = typeId;
+    this.shopParams.pageNumber = 1;
+    this.getProducts();
+
+  }
+
+  // tslint:disable-next-line: typedef
+  onSortSelected(sort: string){
+    this.shopParams.sort = sort;
+    this.shopParams.pageNumber = 1;
+    this.getProducts();
+
+  }
+
+  // tslint:disable-next-line: typedef
+  onPageChanged(event: any){
+    if(this.shopParams.pageNumber !== event){
+      this.shopParams.pageNumber = event;
+      this.getProducts();
+    }
+  }
+
+  // tslint:disable-next-line: typedef
+  onSearch(){
+    this.shopParams.search = this.searchTerm.nativeElement.value;
+  }
+
+  // tslint:disable-next-line: typedef
+  onReset(){
+    this.searchTerm.nativeElement.value = '';
+    this.shopParams = new ShopParams();
     this.getProducts();
 
   }
