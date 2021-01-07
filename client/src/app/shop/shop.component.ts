@@ -12,10 +12,10 @@ import { ShopService } from './shop.service';
 })
 export class ShopComponent implements OnInit {
   @ViewChild('search', {static: true}) searchTerm!: ElementRef;
-  products!: IProduct[];
-  types!: IType[];
+  products: IProduct[] = [];
+  types: IType[] = [] ;
   shopParams = new ShopParams();
-  totalCount: number | undefined;
+  totalCount = 0;
   sortOptions = [
     {name: 'Alfabetico', value: 'name'},
     {name: 'dal prezzo piu´ basso al piu´ alto ', value: 'priceAsc'},
@@ -34,11 +34,19 @@ export class ShopComponent implements OnInit {
 
   // tslint:disable-next-line: typedef
   getProducts(){
+    // tslint:disable-next-line: deprecation
     this.shopService.getProducts(this.shopParams).subscribe(response => {
+      if (response !== null){
       this.products = response.data;
       this.shopParams.pageNumber = response.pageIndex;
       this.shopParams.pageSize = response.pageSize;
-      this.totalCount = response?.count;
+      this.totalCount = response.count;
+      } else {
+        this.products = [];
+        this.shopParams.pageNumber = 1;
+        this.shopParams.pageSize = 50;
+        this.totalCount = 0;
+      }
     }, error => {
       console.log(error);
     });
@@ -47,6 +55,7 @@ export class ShopComponent implements OnInit {
 
   // tslint:disable-next-line: typedef
   getTypes(){
+    // tslint:disable-next-line: deprecation
     this.shopService.getTypes().subscribe(response => {
       this.types = [{id: 0, name: 'Tutti'}, ...response];
 
@@ -73,7 +82,7 @@ export class ShopComponent implements OnInit {
 
   // tslint:disable-next-line: typedef
   onPageChanged(event: any){
-    if(this.shopParams.pageNumber !== event){
+    if (this.shopParams.pageNumber !== event){
       this.shopParams.pageNumber = event;
       this.getProducts();
     }
